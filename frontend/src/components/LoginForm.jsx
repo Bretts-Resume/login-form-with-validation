@@ -5,7 +5,6 @@ export default function LoginForm() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
 
-  
   const validate = () => {
     const newErrors = {};
     if (!formData.email.includes("@")) newErrors.email = "Invalid email";
@@ -18,14 +17,30 @@ export default function LoginForm() {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length === 0) {
-      alert("Logged in!");
-      // submit logic
-    } else {
+    if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      const response = await fetch("/.netlify/functions/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert("Server error");
     }
   };
 
