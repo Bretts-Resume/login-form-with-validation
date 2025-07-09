@@ -5,6 +5,7 @@ export default function LoginForm() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
 
+  
   const validate = () => {
     const newErrors = {};
     if (!formData.email.includes("@")) newErrors.email = "Invalid email";
